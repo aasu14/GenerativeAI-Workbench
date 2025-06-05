@@ -5,7 +5,7 @@ Whether I'm building intelligent agents, exploring prompt engineering, deploying
 
 
    
-**🔍 What's Inside**
+##🔍 What's Inside**
  
  
 📁 Projects – Hands-on implementations with OpenAI, HuggingFace, Cohere, Mistral, etc.
@@ -24,7 +24,7 @@ Whether I'm building intelligent agents, exploring prompt engineering, deploying
  
  
  
-**📦 Tech Stack**
+##📦 Tech Stack**
  
  
 🧱 Frameworks: LangChain, LlamaIndex, Transformers, OpenAI API, FastAPI

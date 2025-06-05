@@ -32,13 +32,3 @@ Whether I'm building intelligent agents, exploring prompt engineering, deploying
 🧰 Tools: Gradio, Streamlit, MLflow, Weights & Biases
 
 🗃️ Vector DBs: FAISS, Pinecone, Chroma
-
- 
-
-**🚀 Use Cases**
-
-Prototyping LLM-based applications
-Building intelligent chatbots and agents
-Experimenting with RAG and memory
-Sharing GenAI learnings, snippets, and reusable modules
-Creating your own AI-powered workflows

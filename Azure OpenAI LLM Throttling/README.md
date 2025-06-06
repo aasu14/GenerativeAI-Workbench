@@ -1,4 +1,5 @@
-Structured LLM throttling covers three main classes involved in managing LLM calls: LLMInitializer, LLMHandler, and LLMLogger.
+Structured LLM throttling covers three main classes involved in managing LLM calls: 
+LLMInitializer, LLMHandler, and LLMLogger.
 
 # 🔄 LLM Throttling System Overview
 In high-volume applications interacting with Large Language Models (LLMs), it's crucial to enforce rate limits, manage resource usage, and ensure fault-tolerant behavior. This is accomplished through a well-architected throttling system composed of three main components:

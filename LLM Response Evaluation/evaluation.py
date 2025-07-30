@@ -65,7 +65,7 @@ def compute_evaluation(filename, model_name):
             answer = out['output']
             references = out['reference_used']
             for doc in db.docstore._dict.values():
-                if doc.metadata['navex_link'] in references:
+                if doc.metadata['link'] in references:
                     page_content = page_content + doc.page_content
 
             if page_content is not None:

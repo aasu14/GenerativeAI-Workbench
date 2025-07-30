@@ -110,4 +110,4 @@ Each line in the output file will now include:
 
 - Ensure that the FAISS index at `index_name/` is compatible with your embedding model.
 - `allow_dangerous_deserialization=True` is used — make sure the source is trusted.
-- The code assumes that every document in FAISS has a `metadata['navex_link']`.
+- The code assumes that every document in FAISS has a `metadata['link']`.

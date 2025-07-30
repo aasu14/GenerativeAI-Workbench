@@ -1,6 +1,6 @@
 import json
 from langchain_community.vectorstores import FAISS
-from AIQ_Common.util.openai_handler import GenOpenai
+from openai_handler import GenOpenai
 from openai_config import *
 
 

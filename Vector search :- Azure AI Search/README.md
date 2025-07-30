@@ -1,23 +1,23 @@
 ## Create a search index in the Azure portal
 
-###Prerequisites
+### Prerequisites
 An active Azure subscription.
 
 An existing Azure AI Search service (formerly known as Azure Cognitive Search).
 
-Step 1: Navigate to Your Search Service
+#### Step 1: Navigate to Your Search Service
 Sign in to the Azure portal.
 
 Locate your Azure AI Search service. You can find it by searching for "AI Search" in the search bar or by navigating to it from your list of resources.
 
 On the search service's Overview page, you'll see a summary of your service, including indexes, indexers, and data sources.
 
-Step 2: Add a New Index
+#### Step 2: Add a New Index
 In the left-hand navigation pane of your search service page, under the Search management section, select Indexes.
 
 Click the + Add Index button at the top of the Indexes pane. This will open the new index configuration page.
 
-Step 3: Define the Index Schema (Fields)
+#### Step 3: Define the Index Schema (Fields)
 This is where you define the structure of your search documents. The index is composed of a collection of fields.
 
 Index Name: Assign a unique, lowercase name for your index. The name must start with a letter and can contain letters, numbers, and dashes.
@@ -51,7 +51,7 @@ Example Field Configuration:
 | rating | Edm.Int32 | | ✔️ | ✔️ | ✔️ | ✔️ | |
 | tags | Collection(Edm.String) | | ✔️ | ✔️ | | ✔️ | ✔️ |
 
-Step 4: Configure Optional Features
+#### Step 4: Configure Optional Features
 While on the new index creation page, you can also configure advanced features.
 
 Suggesters: Create suggesters to enable autocomplete or query suggestion functionality. You need to specify a name for the suggester and select the source fields that will provide the suggested terms.
@@ -60,7 +60,7 @@ Scoring Profiles: Define custom scoring profiles if you want to influence the re
 
 CORS (Cross-Origin Resource Sharing): If your search index will be queried by a web browser-based application from a different domain, enable CORS by selecting Allow all origins or specifying allowed domains.
 
-Step 5: Create the Index
+#### Step 5: Create the Index
 After defining all your fields and optional configurations, double-check your settings.
 
 Click the Create button at the bottom of the page.

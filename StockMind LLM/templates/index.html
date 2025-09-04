@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f1117;
+            color: #eaeaea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #1a1d27;
+            padding: 3rem 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 400px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            color: #00e676;
+            text-shadow: 0px 0px 6px rgba(0,230,118,0.5);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            color: #bbb;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.8rem;
+            border: none;
+            outline: none;
+            background: #2a2f3d;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            background: #33384d;
+            box-shadow: 0px 0px 8px rgba(0,230,118,0.6);
+        }
+
+        button {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 0.8rem;
+            background: linear-gradient(135deg, #00e676, #00c853);
+            color: #111;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #00c853, #00e676);
+            transform: scale(1.03);
+            box-shadow: 0px 0px 12px rgba(0,230,118,0.5);
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <h1>📈 Stock Analysis</h1>
+        <form method="POST">
+            <label for="stock_name">Enter Stock Symbol:</label>
+            <input type="text" id="stock_name" name="stock_name" placeholder="e.g., RELIANCE" required>
+            <button type="submit">Analyze</button>
+        </form>
+    </div>
+</body>
+</html>

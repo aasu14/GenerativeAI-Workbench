@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analysis Results for {{ results.stock_name }}</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Dark minimalist Material design */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #121212;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #ffffff;
+      animation: fadeIn 0.6s ease;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: #f1f1f1;
+    }
+    .card {
+      background: #1e1e1e;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      padding: 20px;
+      margin-bottom: 25px;
+      transform: translateY(0);
+      opacity: 0;
+      animation: slideUp 0.6s ease forwards;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.8);
+    }
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #26c6da;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .back-button:hover { color: #00acc1; }
+    .key-value {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #333;
+    }
+    .key {
+      font-weight: 500;
+      color: #bbb;
+    }
+    .chip {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: white;
+      animation: fadeIn 0.8s ease;
+    }
+    .chip.buy { background: #2e7d32; }
+    .chip.sell { background: #c62828; }
+    .chip.hold { background: #ef6c00; }
+    .chip.medium { background: #ffca28; color: #212121; }
+    .chip.low { background: #43a047; }
+    .chip.high { background: #e53935; }
+    canvas {
+      margin-top: 15px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-button">← Back to Search</a>
+    <h1>📊 Analysis for {{ results.stock_name }}</h1>
+
+    <!-- Current Price -->
+    <div class="card">
+      <h2>Current Price</h2>
+      <p style="font-size:1.3rem;font-weight:600;">
+        ₹{{ "{:,.2f}".format(results.current_price) }}
+        <span style="font-size:0.9rem;color:#888;">(Source: {{ results.data_source }})</span>
+      </p>
+    </div>
+
+    <!-- Technical Analysis -->
+    <div class="card">
+      <h2>Technical Analysis</h2>
+      <div>
+        {% for key, value in results.technical.items() %}
+          {% if key not in ['signals', 'overall_signal', 'trend', 'current_price'] %}
+            <div class="key-value">
+              <span class="key">{{ key.replace('_', ' ').title() }}</span>
+              <span>{{ "%.2f"|format(value) if value is number else value }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <canvas id="maChart"></canvas>
+      <canvas id="oscillatorChart"></canvas>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="card">
+      <h2>📌 Recommendation</h2>
+      <p>
+        <strong>Action:</strong>
+        <span class="chip {{ results.recommendation.action|lower }}">
+          {{ results.recommendation.action }}
+        </span>
+        (Confidence: {{ "%.2f"|format(results.recommendation.confidence) }})
+      </p>
+      <ul>
+        {% for reason in results.recommendation.reasoning %}
+          <li>{{ reason }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Price Targets -->
+    <div class="card">
+      <h2>🎯 Price Targets</h2>
+      <div>
+        {% for key, value in results.price_targets.items() %}
+          <div class="key-value">
+            <span class="key">{{ key.replace('_', ' ').title() }}</span>
+            <span>₹{{ "{:,.2f}".format(value) }}</span>
+          </div>
+        {% endfor %}
+      </div>
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <!-- Risk -->
+    <div class="card">
+      <h2>⚠ Risk Assessment</h2>
+      <p><strong>Level:</strong> 
+        <span class="chip {{ results.risk.risk_level|lower }}">
+          {{ results.risk.risk_level }}
+        </span>
+      </p>
+      <p><strong>Risk Score:</strong> {{ "%.2f"|format(results.risk.risk_score) }}</p>
+      <ul>
+        {% for factor in results.risk.risk_factors %}
+          <li>{{ factor }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const tech = {{ results.technical | tojson }};
+    const priceTargets = {{ results.price_targets | tojson }};
+
+    // Chart.js global dark theme
+    Chart.defaults.color = "#e0e0e0";
+    Chart.defaults.font.family = "Roboto";
+
+    // --- Moving Averages & EMAs ---
+    new Chart(document.getElementById('maChart'), {
+      type: 'line',
+      data: {
+        labels: ["SMA 5","SMA 10","SMA 20","SMA 50","SMA 200","EMA 12","EMA 26"],
+        datasets: [{
+          label: 'Moving Averages',
+          data: [tech.sma_5, tech.sma_10, tech.sma_20, tech.sma_50, tech.sma_200, tech.ema_12, tech.ema_26],
+          borderColor: '#26c6da',
+          backgroundColor: 'rgba(38,198,218,0.2)',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 5,
+          pointBackgroundColor: '#26c6da'
+        }]
+      },
+      options: { plugins: { legend: { labels: { color: '#ccc' } } } }
+    });
+
+    // --- Oscillators ---
+    new Chart(document.getElementById('oscillatorChart'), {
+      type: 'bar',
+      data: {
+        labels: ["RSI","MACD","MACD Signal","MACD Hist","Stoch K","Stoch D","Williams %R"],
+        datasets: [{
+          label: 'Oscillators',
+          data: [tech.rsi, tech.macd, tech.macd_signal, tech.macd_histogram, tech.stoch_k, tech.stoch_d, tech.williams_r],
+          backgroundColor: '#66bb6a'
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#aaa' } }, y: { ticks: { color: '#aaa' } } } }
+    });
+
+    // --- Price Targets ---
+    new Chart(document.getElementById('priceChart'), {
+      type: 'line',
+      data: {
+        labels: Object.keys(priceTargets),
+        datasets: [{
+          label: 'Price Levels',
+          data: Object.values(priceTargets),
+          borderColor: '#ef5350',
+          backgroundColor: 'rgba(239,83,80,0.2)',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 5,
+          pointBackgroundColor: '#ef5350'
+        }]
+      },
+      options: { plugins: { legend: { labels: { color: '#ccc' } } }, scales: { x: { ticks: { color: '#aaa' } }, y: { ticks: { color: '#aaa' } } } }
+    });
+  </script>
+</body>
+</html>
